@@ -12,8 +12,16 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 
+import com.notes.app.Auth.Jwt.JwtFilter;
+
 @Configuration
 public class SecurityConfig {
+  private final JwtFilter jwtFilter;
+
+  public SecurityConfig(JwtFilter jwtFilter) {
+    this.jwtFilter = jwtFilter;
+  }
+
   @Bean
   public SecurityFilterChain globalSettings(HttpSecurity http) throws Exception {
     return http
@@ -31,7 +39,7 @@ public class SecurityConfig {
         .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .authorizeHttpRequests(auth -> auth.requestMatchers("/api/auth/login", "/api/auth/signup", "/api/auth/signout")
             .permitAll().anyRequest().authenticated())
-
+        .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
         .build();
 
   }
