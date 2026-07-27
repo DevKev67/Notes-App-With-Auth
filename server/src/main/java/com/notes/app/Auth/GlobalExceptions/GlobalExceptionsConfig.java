@@ -11,6 +11,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import com.notes.app.Auth.GlobalExceptions.Exceptions.EmailAlreadyExistsException;
+import com.notes.app.Auth.GlobalExceptions.Exceptions.InvalidCredentials;
 
 @Configuration
 public class GlobalExceptionsConfig {
@@ -31,6 +32,14 @@ public class GlobalExceptionsConfig {
 
   @ExceptionHandler(EmailAlreadyExistsException.class)
   public ResponseEntity<Object> emailAlreadyExistsException(EmailAlreadyExistsException e) {
+    return ResponseEntity.badRequest().body(Map.of(
+        "success", false,
+        "data", "",
+        "message", e.getMessage()));
+  }
+
+  @ExceptionHandler(InvalidCredentials.class)
+  public ResponseEntity<Object> invalidCredentials(InvalidCredentials e) {
     return ResponseEntity.badRequest().body(Map.of(
         "success", false,
         "data", "",
