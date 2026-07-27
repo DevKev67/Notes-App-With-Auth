@@ -1,6 +1,9 @@
+import { useNavigate } from "react-router-dom";
 import img from "../assets/random logo.png";
 
 function Login() {
+  const navigate = useNavigate();
+
   return (
     <div className="grid h-screen place-items-center">
       <div className="h-100 w-90  flex items-center justify-start flex-col mb-50">
@@ -10,7 +13,12 @@ function Login() {
         <p className="text-4xl font-bold pb-2">Login</p>
         <p className="mb-5">
           Don't have an account?{" "}
-          <span className="text-[#AA60C8] hover:border-b hover:border-[#AA60C8] hover:cursor-pointer">
+          <span
+            onClick={() => {
+              navigate("/signup");
+            }}
+            className="text-[#AA60C8] hover:border-b hover:border-[#AA60C8] hover:cursor-pointer"
+          >
             sign up
           </span>
         </p>
