@@ -1,10 +1,11 @@
-import "./App.css";
+import SignUp from "./Components/SignUp";
+import Login from "./Components/Login";
 
 function App() {
   return (
-    <>
-      <p>Hello World</p>
-    </>
+    <div className="min-h-screen bg-zinc-900 text-white">
+      <Login />
+    </div>
   );
 }
 
