@@ -5,15 +5,15 @@ import java.util.Map;
 import java.util.List;
 import java.util.ArrayList;
 
-import org.springframework.context.annotation.Configuration;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.notes.app.Auth.GlobalExceptions.Exceptions.EmailAlreadyExistsException;
 import com.notes.app.Auth.GlobalExceptions.Exceptions.InvalidCredentials;
 
-@Configuration
+@RestControllerAdvice
 public class GlobalExceptionsConfig {
   @ExceptionHandler(MethodArgumentNotValidException.class)
   public ResponseEntity<Object> LeftBlankExceptionHandler(MethodArgumentNotValidException e) {
@@ -26,7 +26,6 @@ public class GlobalExceptionsConfig {
 
     return ResponseEntity.badRequest().body(Map.of(
         "success", false,
-        "data", "",
         "message", errors));
   }
 
@@ -35,7 +34,8 @@ public class GlobalExceptionsConfig {
     return ResponseEntity.badRequest().body(Map.of(
         "success", false,
         "data", "",
-        "message", e.getMessage()));
+        "message", Map.of(
+            "email", List.of(e.getMessage()))));
   }
 
   @ExceptionHandler(InvalidCredentials.class)
