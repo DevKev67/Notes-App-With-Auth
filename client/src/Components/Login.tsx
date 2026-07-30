@@ -7,7 +7,7 @@ function Login() {
   return (
     <div className="grid h-screen place-items-center">
       <div className="h-100 w-90  flex items-center justify-start flex-col mb-50">
-        <div className="h-20 w-full flex items-center mb-2">
+        <div className="h-20 w-full flex items-center mb-5">
           <img className="h-50 w-full object-contain" src={img} />
         </div>
         <p className="text-4xl font-bold pb-2">Login</p>
