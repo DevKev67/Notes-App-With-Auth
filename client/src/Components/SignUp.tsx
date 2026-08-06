@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import img from "../assets/random logo.png";
 import { useState } from "react";
 
@@ -42,7 +42,7 @@ function SignUp() {
   }
 
   if (backendInfo?.success) {
-    navigate("/login");
+    return <Navigate to="/login" />;
   }
 
   const userInfo = {
