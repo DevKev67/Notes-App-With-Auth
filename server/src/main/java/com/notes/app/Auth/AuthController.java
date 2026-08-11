@@ -1,6 +1,7 @@
 package com.notes.app.Auth;
 
 import java.time.Duration;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.http.HttpHeaders;
@@ -47,7 +48,7 @@ public class AuthController {
         .httpOnly(true)
         .secure(false)
         .path("/")
-        .maxAge(Duration.ofSeconds(30))
+        .maxAge(Duration.ofSeconds(10))
         .sameSite("Lax")
         .build();
 
@@ -55,7 +56,9 @@ public class AuthController {
         .body(Map.of(
             "success", true,
             "message", "Logged In Succesfully",
-            "data", response.getSignUpResponse()));
+            "data", response.getExpirationTimeResponse()
+
+        ));
 
   }
 

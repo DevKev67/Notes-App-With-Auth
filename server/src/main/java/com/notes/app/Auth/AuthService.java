@@ -3,6 +3,7 @@ package com.notes.app.Auth;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.notes.app.Auth.Dto.ExpirationTimeResponse;
 import com.notes.app.Auth.Dto.LoginRequest;
 import com.notes.app.Auth.Dto.LoginResponse;
 import com.notes.app.Auth.Dto.SignUpRequest;
@@ -52,16 +53,16 @@ public class AuthService {
     UserEntity user = userRepo.findByEmail(request.getEmail())
         .orElseThrow(() -> new InvalidCredentials("Invalid Credentials"));
 
-    boolean matchesPassword = passwordEncoder.matches(user.getPassword(), request.getPassword());
+    boolean matchesPassword = passwordEncoder.matches(request.getPassword(), user.getPassword());
 
     if (!matchesPassword) {
       throw new InvalidCredentials("Invalid Credentials");
     }
 
     String token = jwtService.createToken(user);
+    long expiresAt = jwtService.extractExpiration(token).getTime();
 
-    return new LoginResponse(token, toSignUpResponse(user));
-
+    return new LoginResponse(token, new ExpirationTimeResponse(expiresAt, user.getCreated_at()));
   }
 
 }

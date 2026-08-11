@@ -43,7 +43,8 @@ public class GlobalExceptionsConfig {
     return ResponseEntity.badRequest().body(Map.of(
         "success", false,
         "data", "",
-        "message", e.getMessage()));
+        "message", Map.of(
+            "email", List.of(e.getMessage()))));
   }
 
 }
