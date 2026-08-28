@@ -5,12 +5,13 @@ import Home from "./Components/Home";
 import ProtectedRoutes from "./Utils/ProtectedRoutes";
 import GuestRoutes from "./Utils/GuestRoutes";
 import { useState } from "react";
+import Create from "./Components/Create";
 
 function App() {
   const [message, setMessage] = useState<boolean>(false);
 
   return (
-    <div className="min-h-screen bg-zinc-900 text-white">
+    <div className="min-h-screen bg-[#1D1A20] text-white">
       <BrowserRouter>
         <Routes>
           <Route element={<GuestRoutes />}>
@@ -23,6 +24,7 @@ function App() {
 
           <Route element={<ProtectedRoutes setMessage={setMessage} />}>
             <Route path="/" element={<Home />} />
+            <Route path="/create" element={<Create />} />
           </Route>
         </Routes>
       </BrowserRouter>

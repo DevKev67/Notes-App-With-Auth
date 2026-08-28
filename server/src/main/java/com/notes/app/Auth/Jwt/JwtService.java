@@ -20,7 +20,7 @@ public class JwtService {
 
   public String createToken(UserEntity userEntity) {
     long currentTime = System.currentTimeMillis();
-    long expirationtime = currentTime + Duration.ofSeconds(10).toMillis();
+    long expirationtime = currentTime + Duration.ofHours(3).toMillis();
 
     return JWT.create()
         .withSubject(userEntity.getId().toString())
