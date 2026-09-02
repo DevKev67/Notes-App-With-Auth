@@ -1,9 +1,13 @@
 import { useNavigate } from "react-router-dom";
 import arrow from "../assets/left-arrow.svg";
 import search from "../assets/searchIcon.svg";
+import gearIcon from "../assets/gear-solid-full.svg";
+import { useState } from "react";
 
 function Home() {
   const navigate = useNavigate();
+
+  const [settingsPopUp, setSettingsPopUp] = useState<boolean>(false);
 
   return (
     <div>
@@ -17,17 +21,27 @@ function Home() {
           </div>
           <div></div>
         </div>
-        <div className="relative w-45 mt-5">
-          <input
-            className="placeholder:text-white border-2 border-[#39313e] rounded-2xl
+        <div className="h-full flex flex-col items-center justify-between">
+          <div className="relative w-45 mt-5">
+            <input
+              className="placeholder:text-white border-2 border-[#39313e] rounded-2xl
                 p-1 pl-3 pr-10 text-sm w-full focus:outline-none"
-            placeholder="Search"
-          />
-          <div
-            className="absolute right-0 top-0  flex items-center justify-center
+              placeholder="Search"
+            />
+            <div
+              className="absolute right-0 top-0  flex items-center justify-center
               bg-[#AA60C8] h-7 w-7 rounded-2xl cursor-pointer"
+            >
+              <img className="h-5" src={search} />
+            </div>
+          </div>
+          <div
+            onClick={() => {
+              setSettingsPopUp(settingsPopUp ? false : true);
+            }}
+            className="mb-10 cursor-pointer"
           >
-            <img className="h-5" src={search} />
+            <img className="h-6" src={gearIcon} />
           </div>
         </div>
       </div>
