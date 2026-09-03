@@ -39,9 +39,12 @@ function Home() {
             onClick={() => {
               setSettingsPopUp(settingsPopUp ? false : true);
             }}
-            className="mb-10 cursor-pointer"
+            className="mb-10 cursor-pointer relative bg-blue-500"
           >
             <img className="h-6" src={gearIcon} />
+            <div className="absolute top-0 right-0 h-20 w-10 bg-red-500">
+              <p>test</p>
+            </div>
           </div>
         </div>
       </div>
