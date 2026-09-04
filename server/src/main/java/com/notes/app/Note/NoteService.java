@@ -4,6 +4,8 @@ import org.springframework.stereotype.Service;
 
 import com.notes.app.Auth.User.UserEntity;
 
+import java.util.List;
+
 @Service
 public class NoteService {
 
@@ -22,10 +24,19 @@ public class NoteService {
 
     NoteEntity savedNote = noteRepo.save(note);
 
-    return new NoteResponse(
-        savedNote.getNoteId(),
-        savedNote.getTitle(),
-        savedNote.getContent());
+    return new NoteResponse(savedNote.getNoteId());
+  }
+
+  public List<GetNoteResponse> getUserNotes(UserEntity user) {
+    return noteRepo
+        .findAllByUser_Id(user.getId())
+        .stream()
+        .map(note -> new GetNoteResponse(
+            note.getNoteId(),
+            note.getTitle(),
+            note.getContent()))
+        .toList();
+
   }
 
 }

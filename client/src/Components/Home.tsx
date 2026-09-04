@@ -2,12 +2,41 @@ import { useNavigate } from "react-router-dom";
 import arrow from "../assets/left-arrow.svg";
 import search from "../assets/searchIcon.svg";
 import gearIcon from "../assets/gear-solid-full.svg";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+
+type noteResponseType = {
+  success: boolean;
+  userNotes: [noteId: number, title: string, context: string];
+};
 
 function Home() {
   const navigate = useNavigate();
-
   const [settingsPopUp, setSettingsPopUp] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [userNotes, setUserNotes] = useState<noteResponseType | null>(null);
+
+  useEffect(() => {
+    async function getUserNotes() {
+      setIsLoading(true);
+      try {
+        const response = await fetch("http://localhost:8080/api/notes", {
+          method: "GET",
+          credentials: "include",
+        });
+
+        const data = await response.json();
+        setUserNotes(data);
+      } catch (err) {
+        console.error("Error: " + err);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    getUserNotes();
+  }, []);
+
+  console.log(userNotes);
 
   return (
     <div>
@@ -70,6 +99,7 @@ function Home() {
       </div>
       <div className="ml-50 pl-5">
         <p className="mt-4 text-2xl font-['Newsreader']">Notes</p>
+        {isLoading && <p>Loading...</p>}
         <div className="w-full h-175 mt-5"></div>
       </div>
     </div>

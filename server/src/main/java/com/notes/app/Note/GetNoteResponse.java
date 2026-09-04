@@ -5,6 +5,8 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class NoteResponse {
+public class GetNoteResponse {
   private Long noteId;
+  private String title;
+  private String context;
 }

@@ -9,8 +9,6 @@ type noteResponseType = {
   success: boolean;
   response: {
     noteId: number;
-    title: string;
-    content: string;
   };
 };
 
@@ -20,9 +18,7 @@ function Create() {
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [createdAt] = useState(() => new Date());
-  const [noteResponse, setNoteReponse] = useState<noteResponseType | null>(
-    null,
-  );
+  const [, setNoteReponse] = useState<noteResponseType | null>(null);
 
   const navigate = useNavigate();
 
@@ -31,13 +27,11 @@ function Create() {
     content,
   };
 
-  console.log(noteResponse);
-
   async function handleNoteCreation() {
     try {
       setIsLoading(true);
 
-      const response = await fetch("http://localhost:8080/api/notes", {
+      const response = await fetch("http://localhost:8080/api/notes/create", {
         method: "POST",
         credentials: "include",
         headers: {
@@ -79,6 +73,10 @@ function Create() {
   });
 
   const handlePointerDown = (e: PointerEvent<HTMLDivElement>) => {
+    if (e.target !== e.currentTarget) {
+      return;
+    }
+
     isDraggingRef.current = true;
 
     dragStartRef.current = {
@@ -180,7 +178,12 @@ function Create() {
             className="shrink-0 w-full flex items-center justify-between 
             cursor-grab active:cursor-grabbing select-none touch-none"
           >
-            <div className="flex items-center h-4">
+            <div
+              className="flex items-center h-4 cursor-pointer"
+              onClick={() => {
+                navigate("/");
+              }}
+            >
               <img
                 className="h-full mr-1"
                 src={createArrow}
