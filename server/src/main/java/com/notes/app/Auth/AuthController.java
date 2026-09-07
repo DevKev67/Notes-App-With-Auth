@@ -1,7 +1,6 @@
 package com.notes.app.Auth;
 
 import java.time.Duration;
-import java.util.List;
 import java.util.Map;
 
 import org.springframework.http.HttpHeaders;
@@ -59,6 +58,24 @@ public class AuthController {
             "data", response.getExpirationTimeResponse()
 
         ));
+
+  }
+
+  @PostMapping("/signout")
+  public ResponseEntity<Object> logout() {
+    ResponseCookie cookie = ResponseCookie.from("jwt", "")
+        .httpOnly(true)
+        .secure(false)
+        .path("/")
+        .maxAge(Duration.ZERO)
+        .sameSite("Lax")
+        .build();
+
+    return ResponseEntity.ok()
+        .header(HttpHeaders.SET_COOKIE, cookie.toString())
+        .body(Map.of(
+            "success", true,
+            "message", "Logged out successfully"));
 
   }
 

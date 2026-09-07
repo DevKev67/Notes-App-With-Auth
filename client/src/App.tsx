@@ -7,8 +7,20 @@ import GuestRoutes from "./Utils/GuestRoutes";
 import { useState } from "react";
 import Create from "./Components/Create";
 
+type BackEndResponseGoodType = {
+  data: {
+    expiration: number;
+    created_at: string;
+    name: string;
+  };
+  message: string;
+  success: true;
+};
+
 function App() {
   const [message, setMessage] = useState<boolean>(false);
+  const [loginResponse, setLoginResponse] =
+    useState<BackEndResponseGoodType | null>(null);
 
   return (
     <div className="min-h-screen bg-[#1D1A20] text-white">
@@ -18,12 +30,18 @@ function App() {
             <Route path="/signup" element={<SignUp />} />
             <Route
               path="/login"
-              element={<Login message={message} setMessage={setMessage} />}
+              element={
+                <Login
+                  message={message}
+                  setMessage={setMessage}
+                  setLoginResponse={setLoginResponse}
+                />
+              }
             />
           </Route>
 
           <Route element={<ProtectedRoutes setMessage={setMessage} />}>
-            <Route path="/" element={<Home />} />
+            <Route path="/" element={<Home loginResponse={loginResponse} />} />
             <Route path="/create" element={<Create />} />
           </Route>
         </Routes>

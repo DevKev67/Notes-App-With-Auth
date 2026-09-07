@@ -12,5 +12,6 @@ import lombok.Setter;
 public class ExpirationTimeResponse {
   private long expiration;
   private LocalDateTime created_at;
+  private String name;
 
 }

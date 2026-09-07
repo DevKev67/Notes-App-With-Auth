@@ -9,11 +9,39 @@ type noteResponseType = {
   userNotes: [noteId: number, title: string, context: string];
 };
 
-function Home() {
+type BackEndResponseGoodType = {
+  data: {
+    expiration: number;
+    created_at: string;
+    name: string;
+  };
+  message: string;
+  success: true;
+};
+
+type ChildProps = {
+  loginResponse: BackEndResponseGoodType | null;
+};
+
+function Home({ loginResponse }: ChildProps) {
   const navigate = useNavigate();
   const [settingsPopUp, setSettingsPopUp] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [userNotes, setUserNotes] = useState<noteResponseType | null>(null);
+  const [, setUserNotes] = useState<noteResponseType | null>(null);
+
+  const potentialUserName =
+    loginResponse?.data.name ?? localStorage.getItem("userName");
+
+  function correctUserName() {
+    if (!potentialUserName) {
+      return "User";
+    }
+
+    const cleanName = potentialUserName?.trim().toLocaleLowerCase();
+    const firstLetter = cleanName?.charAt(0).toLocaleUpperCase();
+
+    return firstLetter + cleanName.slice(1);
+  }
 
   useEffect(() => {
     async function getUserNotes() {
@@ -36,7 +64,25 @@ function Home() {
     getUserNotes();
   }, []);
 
-  console.log(userNotes);
+  async function signOut() {
+    try {
+      const response = await fetch("http://localhost:8080/api/auth/signout", {
+        method: "POST",
+        credentials: "include",
+      });
+
+      if (!response.ok) {
+        throw new Error("Logout failed");
+      }
+
+      localStorage.removeItem("expiresAt");
+      localStorage.removeItem("userName");
+      localStorage.removeItem("createdAt");
+      navigate("/login", { replace: true });
+    } catch (err) {
+      console.error("Error: " + err);
+    }
+  }
 
   return (
     <div>
@@ -46,7 +92,11 @@ function Home() {
       >
         <div className="mt-2.5 pb-2.5 w-full flex items-center justify-between border-b-2 border-b-[#39313e]">
           <div>
-            <img className="h-7 mr-5 cursor-pointer" src={arrow} />
+            <img
+              className="h-7 mr-5 cursor-pointer"
+              onClick={signOut}
+              src={arrow}
+            />
           </div>
           <div></div>
         </div>
@@ -81,7 +131,9 @@ function Home() {
         <div className="flex items-center justify-between ">
           <div className="flex items-center justify-start w-full">
             <div>
-              <p className="ml-5 text-xl font-['Inter']">Hello, Kevin</p>
+              <p className="ml-5 text-xl font-['Inter']">
+                Hello, {correctUserName()}
+              </p>
             </div>
           </div>
           <div className="w-full flex items-center justify-end ">

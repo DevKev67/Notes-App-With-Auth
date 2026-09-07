@@ -62,7 +62,7 @@ public class AuthService {
     String token = jwtService.createToken(user);
     long expiresAt = jwtService.extractExpiration(token).getTime();
 
-    return new LoginResponse(token, new ExpirationTimeResponse(expiresAt, user.getCreated_at()));
+    return new LoginResponse(token, new ExpirationTimeResponse(expiresAt, user.getCreated_at(), user.getName()));
   }
 
 }

@@ -14,6 +14,7 @@ type BackEndResponseGoodType = {
   data: {
     expiration: number;
     created_at: string;
+    name: string;
   };
   message: string;
   success: true;
@@ -22,9 +23,10 @@ type BackEndResponseGoodType = {
 type ChildComponentProps = {
   message: boolean;
   setMessage: Dispatch<SetStateAction<boolean>>;
+  setLoginResponse: Dispatch<SetStateAction<BackEndResponseGoodType | null>>;
 };
 
-function Login({ message, setMessage }: ChildComponentProps) {
+function Login({ message, setMessage, setLoginResponse }: ChildComponentProps) {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -53,6 +55,8 @@ function Login({ message, setMessage }: ChildComponentProps) {
 
   if (backendResponse?.success) {
     localStorage.setItem("expiresAt", String(backendResponse.data.expiration));
+    localStorage.setItem("userName", backendResponse.data.name);
+    localStorage.setItem("createdAt", backendResponse.data.created_at);
     return <Navigate to="/" />;
   }
 
@@ -75,6 +79,11 @@ function Login({ message, setMessage }: ChildComponentProps) {
       });
 
       const data = await response.json();
+
+      if (response.ok) {
+        setLoginResponse(data);
+      }
+
       setBackendResponse(data);
     } catch (e) {
       console.error("Something went wrong: " + e);
