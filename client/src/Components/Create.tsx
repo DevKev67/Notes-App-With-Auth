@@ -147,7 +147,7 @@ function Create() {
           <div className="h-full flex flex-col items-center justify-between">
             <div></div>
             <div className="mb-10">
-              <img className="h-6" src={gearIcon} />
+              <p>Maybe something here later</p>
             </div>
           </div>
         </div>

@@ -6,6 +6,7 @@ import ProtectedRoutes from "./Utils/ProtectedRoutes";
 import GuestRoutes from "./Utils/GuestRoutes";
 import { useState } from "react";
 import Create from "./Components/Create";
+import Settings from "./Components/Settings";
 
 type BackEndResponseGoodType = {
   data: {
@@ -43,6 +44,7 @@ function App() {
           <Route element={<ProtectedRoutes setMessage={setMessage} />}>
             <Route path="/" element={<Home loginResponse={loginResponse} />} />
             <Route path="/create" element={<Create />} />
+            <Route path="/settings" element={<Settings />} />
           </Route>
         </Routes>
       </BrowserRouter>

@@ -3,6 +3,7 @@ import arrow from "../assets/left-arrow.svg";
 import search from "../assets/searchIcon.svg";
 import gearIcon from "../assets/gear-solid-full.svg";
 import { useEffect, useState } from "react";
+import { useKeyboardShortcut } from "../CustomHooks/useKeyboardShortcut";
 
 type noteResponseType = {
   success: boolean;
@@ -25,9 +26,12 @@ type ChildProps = {
 
 function Home({ loginResponse }: ChildProps) {
   const navigate = useNavigate();
-  const [settingsPopUp, setSettingsPopUp] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [, setUserNotes] = useState<noteResponseType | null>(null);
+
+  useKeyboardShortcut("s", "ctrl", () => {
+    navigate("/settings");
+  });
 
   const potentialUserName =
     loginResponse?.data.name ?? localStorage.getItem("userName");
@@ -116,14 +120,11 @@ function Home({ loginResponse }: ChildProps) {
           </div>
           <div
             onClick={() => {
-              setSettingsPopUp(settingsPopUp ? false : true);
+              navigate("/settings");
             }}
-            className="mb-10 cursor-pointer relative bg-blue-500"
+            className="mb-10 cursor-pointer relative"
           >
             <img className="h-6" src={gearIcon} />
-            <div className="absolute top-0 right-0 h-20 w-10 bg-red-500">
-              <p>test</p>
-            </div>
           </div>
         </div>
       </div>
