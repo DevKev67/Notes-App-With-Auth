@@ -1,10 +1,16 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 export function useKeyboardShortcut(
   targetKey: string,
   modifier: string,
   callback: (...args: unknown[]) => unknown,
 ) {
+  const callbackRef = useRef(callback);
+
+  useEffect(() => {
+    callbackRef.current = callback;
+  }, [callback]);
+
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       // Check if the primary key matches
@@ -29,7 +35,7 @@ export function useKeyboardShortcut(
 
       if (isKeyMatch && isModifierMatch && !isTyping) {
         event.preventDefault(); // Stop default browser actions (e.g., Ctrl+S saving the page)
-        callback();
+        callbackRef.current();
       }
     };
 
@@ -38,5 +44,5 @@ export function useKeyboardShortcut(
 
     // Clean up the listener when the component unmounts
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [targetKey, modifier, callback]);
+  }, [targetKey, modifier]);
 }

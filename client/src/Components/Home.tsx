@@ -3,7 +3,6 @@ import arrow from "../assets/left-arrow.svg";
 import search from "../assets/searchIcon.svg";
 import gearIcon from "../assets/gear-solid-full.svg";
 import { useEffect, useState } from "react";
-import { useKeyboardShortcut } from "../CustomHooks/useKeyboardShortcut";
 
 type noteResponseType = {
   success: boolean;
@@ -28,10 +27,6 @@ function Home({ loginResponse }: ChildProps) {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [, setUserNotes] = useState<noteResponseType | null>(null);
-
-  useKeyboardShortcut("s", "ctrl", () => {
-    navigate("/settings");
-  });
 
   const potentialUserName =
     loginResponse?.data.name ?? localStorage.getItem("userName");

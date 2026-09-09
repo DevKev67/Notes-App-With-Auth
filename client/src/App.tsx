@@ -7,6 +7,7 @@ import GuestRoutes from "./Utils/GuestRoutes";
 import { useState } from "react";
 import Create from "./Components/Create";
 import Settings from "./Components/Settings";
+import { AppShortcuts } from "./Utils/AppShortcuts";
 
 type BackEndResponseGoodType = {
   data: {
@@ -26,6 +27,7 @@ function App() {
   return (
     <div className="min-h-screen bg-[#1D1A20] text-white">
       <BrowserRouter>
+        <AppShortcuts />
         <Routes>
           <Route element={<GuestRoutes />}>
             <Route path="/signup" element={<SignUp />} />
