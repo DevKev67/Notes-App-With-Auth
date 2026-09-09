@@ -1,6 +1,12 @@
 import { Navigate, useNavigate } from "react-router-dom";
 import img from "../assets/random logo.png";
-import { useEffect, useState, type Dispatch, type SetStateAction } from "react";
+import {
+  useEffect,
+  useState,
+  type Dispatch,
+  type SetStateAction,
+  type SubmitEvent,
+} from "react";
 
 type BackEndResponseBadType = {
   message: {
@@ -33,6 +39,11 @@ function Login({ message, setMessage, setLoginResponse }: ChildComponentProps) {
   const [backendResponse, setBackendResponse] = useState<
     BackEndResponseBadType | BackEndResponseGoodType | null
   >(null);
+
+  const handleSubmit = (event: SubmitEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    sendLoginInfo();
+  };
 
   const navigate = useNavigate();
   const errors: string[] = [];
@@ -94,55 +105,62 @@ function Login({ message, setMessage, setLoginResponse }: ChildComponentProps) {
 
   return (
     <div className="grid h-screen place-items-center">
-      {isLoading && <p>Loading...</p>}
-      <div className="h-100 w-90  flex items-center justify-start flex-col mb-50">
-        <div className="h-20 w-full flex items-center mb-5">
-          <img className="h-50 w-full object-contain" src={img} />
+      <div className="mb-50 flex h-100 w-90 flex-col items-center justify-start">
+        <div className="mb-5 flex h-20 w-full items-center">
+          <img className="h-50 w-full object-contain" src={img} alt="Logo" />
         </div>
-        <p className="text-4xl font-bold pb-2">Login</p>
+
+        <p className="pb-2 text-4xl font-bold">Login</p>
+
         <p className="mb-5">
           Don't have an account?{" "}
           <span
-            onClick={() => {
-              navigate("/signup");
-            }}
-            className="text-[#AA60C8] hover:border-b hover:border-[#AA60C8] hover:cursor-pointer"
+            onClick={() => navigate("/signup")}
+            className="text-[#AA60C8] hover:cursor-pointer hover:border-b hover:border-[#AA60C8]"
           >
             sign up
           </span>
         </p>
-        <div className="mt-5 flex flex-col w-full">
-          <p className="text-xs text-zinc-600 mb-1">YOUR EMAIL</p>
+
+        <form onSubmit={handleSubmit} className="mt-5 flex w-full flex-col">
+          <p className="mb-1 text-xs text-zinc-600">YOUR EMAIL</p>
+
           <input
-            className="border-b-2 border-zinc-700 mb-5 focus: outline-none placeholder-zinc-700 p-1"
+            type="email"
+            value={email}
+            className="mb-5 border-b-2 border-zinc-700 p-1 placeholder-zinc-700 focus:outline-none"
             placeholder="Type your email here"
-            onChange={(e) => {
-              setEmail(e.target.value);
-            }}
+            onChange={(event) => setEmail(event.target.value)}
           />
-          <p className="text-xs text-zinc-600 mb-1">YOUR PASSWORD</p>
+
+          <p className="mb-1 text-xs text-zinc-600">YOUR PASSWORD</p>
+
           <input
-            className="border-b-2 border-zinc-700 mb-5 focus: outline-none placeholder-zinc-700 p-1"
+            type="password"
+            value={password}
+            className="mb-5 border-b-2 border-zinc-700 p-1 placeholder-zinc-700 focus:outline-none"
             placeholder="Type your password here"
-            onChange={(e) => {
-              setPassword(e.target.value);
-            }}
-          />{" "}
-        </div>
-        <button
-          onClick={sendLoginInfo}
-          className="bg-[#AA60C8] mt-2 p-2 w-90 rounded-sm active:scale-95 transition-transform duration-150"
-        >
-          Login
-        </button>
+            onChange={(event) => setPassword(event.target.value)}
+          />
+
+          <button
+            type="submit"
+            disabled={isLoading}
+            className="mt-2 w-full rounded-sm bg-[#AA60C8] p-2 transition-transform duration-150 active:scale-95 disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            {isLoading ? "Logging in..." : "Login"}
+          </button>
+        </form>
 
         {message && (
           <p className="mt-2 text-yellow-400">
-            You have been logged out. Please Sign in again.
+            You have been logged out. Please sign in again.
           </p>
         )}
 
-        {backendResponse && <p className="mt-2 text-red-600">{errors[0]}</p>}
+        {backendResponse && !backendResponse.success && (
+          <p className="mt-2 text-red-600">{errors[0]}</p>
+        )}
       </div>
     </div>
   );
