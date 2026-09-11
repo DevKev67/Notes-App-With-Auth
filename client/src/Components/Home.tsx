@@ -3,10 +3,11 @@ import arrow from "../assets/left-arrow.svg";
 import search from "../assets/searchIcon.svg";
 import gearIcon from "../assets/gear-solid-full.svg";
 import { useEffect, useState } from "react";
+import NoteComponent from "./NoteComponent";
 
 type noteResponseType = {
   success: boolean;
-  userNotes: [noteId: number, title: string, context: string];
+  userNotes: [{ noteId: number; title: string; context: string }];
 };
 
 type BackEndResponseGoodType = {
@@ -26,7 +27,9 @@ type ChildProps = {
 function Home({ loginResponse }: ChildProps) {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [, setUserNotes] = useState<noteResponseType | null>(null);
+  const [userNotes, setUserNotes] = useState<noteResponseType | null>(null);
+  const [noteText, setNoteText] = useState<string[] | []>([]);
+  const [noteTitle, setNoteTitle] = useState<string[] | []>([]);
 
   const potentialUserName =
     loginResponse?.data.name ?? localStorage.getItem("userName");
@@ -86,7 +89,7 @@ function Home({ loginResponse }: ChildProps) {
   return (
     <div>
       <div
-        className="flex flex-col items-center fixed bg-[#201d22]
+        className="flex flex-col items-center fixed bg-[#1D1A20]
         border-r-[#39313e] border-r-2 left-0 bottom-0 top-0 w-50"
       >
         <div className="mt-2.5 pb-2.5 w-full flex items-center justify-between border-b-2 border-b-[#39313e]">
@@ -148,7 +151,9 @@ function Home({ loginResponse }: ChildProps) {
       <div className="ml-50 pl-5">
         <p className="mt-4 text-2xl font-['Newsreader']">Notes</p>
         {isLoading && <p>Loading...</p>}
-        <div className="w-full h-175 mt-5"></div>
+        <div className="w-full h-175 mt-5 grid grid-rows-[250px_250px] grid-cols-[250px] gap-4">
+          <NoteComponent />
+        </div>
       </div>
     </div>
   );
