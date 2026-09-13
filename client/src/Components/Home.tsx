@@ -28,8 +28,10 @@ function Home({ loginResponse }: ChildProps) {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [userNotes, setUserNotes] = useState<noteResponseType | null>(null);
-  const [noteText, setNoteText] = useState<string[] | []>([]);
-  const [noteTitle, setNoteTitle] = useState<string[] | []>([]);
+
+  const userNoteArray = userNotes?.userNotes;
+
+  console.log(userNoteArray);
 
   const potentialUserName =
     loginResponse?.data.name ?? localStorage.getItem("userName");
@@ -152,7 +154,16 @@ function Home({ loginResponse }: ChildProps) {
         <p className="mt-4 text-2xl font-['Newsreader']">Notes</p>
         {isLoading && <p>Loading...</p>}
         <div className="w-full h-175 mt-5 grid grid-rows-[250px_250px] grid-cols-[250px] gap-4">
-          <NoteComponent />
+          {userNoteArray?.map((e) => {
+            return (
+              <NoteComponent
+                key={e.noteId}
+                context={e.context}
+                title={e.title}
+                noteid={e.noteId}
+              />
+            );
+          })}
         </div>
       </div>
     </div>
