@@ -7,7 +7,7 @@ import lombok.Getter;
 @Getter
 public class CreateNoteRequest {
   @NotBlank(message = "Title is required")
-  @Size(max = 50, message = "Title cannot exceed 50 characters")
+  @Size(max = 100, message = "Title cannot exceed 100 characters")
   private String title;
 
   @NotBlank(message = "Content is required")

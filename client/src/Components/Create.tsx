@@ -1,7 +1,6 @@
 import arrow from "../assets/left-arrow.svg";
 import createArrow from "../assets/create-arrow.svg";
 import logo from "../assets/random logo.png";
-import gearIcon from "../assets/gear-solid-full.svg";
 import { useRef, useState, type PointerEvent } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -228,7 +227,10 @@ function Create() {
                 <button
                   className="bg-[#a963c4] p-2 pl-4 pr-4 rounded-lg text-xs cursor-pointer active:scale-90
               transition-all duration-200 shadow-[1px_1px_10px] shadow-[#a963c4]"
-                  onClick={handleNoteCreation}
+                  onClick={() => {
+                    navigate("/");
+                    handleNoteCreation();
+                  }}
                 >
                   Save Note
                 </button>

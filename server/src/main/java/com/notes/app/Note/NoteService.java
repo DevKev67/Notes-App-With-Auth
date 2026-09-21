@@ -2,6 +2,7 @@ package com.notes.app.Note;
 
 import org.springframework.stereotype.Service;
 
+import com.notes.app.Auth.GlobalExceptions.Exceptions.NoteNotFoundException;
 import com.notes.app.Auth.User.UserEntity;
 
 import java.util.List;
@@ -36,6 +37,16 @@ public class NoteService {
             note.getTitle(),
             note.getContent()))
         .toList();
+  }
+
+  public void deleteUserNote(Long noteId, UserEntity user) {
+    boolean exists = noteRepo.existsByNoteIdAndUserName(noteId, user.getName());
+
+    if (!exists) {
+      throw new NoteNotFoundException("Note not found or unauthorized to delete");
+    }
+
+    noteRepo.deleteByNoteIdAndUserName(noteId, user.getName());
 
   }
 

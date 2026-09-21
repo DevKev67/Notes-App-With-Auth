@@ -22,9 +22,11 @@ type BackEndResponseGoodType = {
 
 type ChildProps = {
   loginResponse: BackEndResponseGoodType | null;
+  deleteFunction: (id: number) => Promise<void>;
+  isLoadingForNote: boolean;
 };
 
-function Home({ loginResponse }: ChildProps) {
+function Home({ loginResponse, deleteFunction, isLoadingForNote }: ChildProps) {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [userNotes, setUserNotes] = useState<noteResponseType | null>(null);
@@ -66,7 +68,7 @@ function Home({ loginResponse }: ChildProps) {
     }
 
     getUserNotes();
-  }, []);
+  }, [deleteFunction]);
 
   async function signOut() {
     try {
@@ -150,13 +152,15 @@ function Home({ loginResponse }: ChildProps) {
           </div>
         </div>
       </div>
-      <div className="ml-50 pl-5">
+      <div className="ml-48 px-5 pb-8">
         <p className="mt-4 text-2xl font-['Newsreader']">Notes</p>
         {isLoading && <p>Loading...</p>}
-        <div className="w-full h-175 mt-5 grid grid-rows-[250px_250px] grid-cols-[250px] gap-4">
+        <div className="mt-5 grid w-full grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
           {userNoteArray?.map((e) => {
             return (
               <NoteComponent
+                isLoading={isLoadingForNote}
+                deleteFunction={deleteFunction}
                 key={e.noteId}
                 context={e.context}
                 title={e.title}
