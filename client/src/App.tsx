@@ -25,6 +25,11 @@ function App() {
     useState<BackEndResponseGoodType | null>(null);
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [notesRefresh, setNotesRefresh] = useState<number>(0);
+
+  function refreshNotes() {
+    setNotesRefresh((e) => e + 1);
+  }
 
   async function deleteUserNoteRequest(id: number): Promise<void> {
     try {
@@ -42,6 +47,8 @@ function App() {
       if (!response.ok) {
         throw new Error(`Delete failed: ${response.status}`);
       }
+
+      refreshNotes();
     } catch (err) {
       console.error(err);
     } finally {
@@ -72,6 +79,7 @@ function App() {
               path="/"
               element={
                 <Home
+                  notesRefresh={notesRefresh}
                   isLoadingForNote={isLoading}
                   deleteFunction={deleteUserNoteRequest}
                   loginResponse={loginResponse}

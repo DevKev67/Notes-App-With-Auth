@@ -190,7 +190,9 @@ function Create() {
               />
               <p className="text-zinc-400 text-xs">All Notes</p>
             </div>
-            <p className="text-zinc-400 text-xs">Unsaved Changes</p>
+            <p className="text-zinc-400 text-xs">
+              {wordCount > 0 ? "Unsaved Changes" : "No Changes"}
+            </p>
           </div>
           <div className="w-full">
             <div className="pb-6 border-b border-b-[#39313e]">
@@ -227,9 +229,9 @@ function Create() {
                 <button
                   className="bg-[#a963c4] p-2 pl-4 pr-4 rounded-lg text-xs cursor-pointer active:scale-90
               transition-all duration-200 shadow-[1px_1px_10px] shadow-[#a963c4]"
-                  onClick={() => {
+                  onClick={async () => {
+                    await handleNoteCreation();
                     navigate("/");
-                    handleNoteCreation();
                   }}
                 >
                   Save Note

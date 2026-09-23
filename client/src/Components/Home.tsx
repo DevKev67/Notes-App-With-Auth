@@ -7,7 +7,7 @@ import NoteComponent from "./NoteComponent";
 
 type noteResponseType = {
   success: boolean;
-  userNotes: [{ noteId: number; title: string; context: string }];
+  userNotes: Array<{ noteId: number; title: string; context: string }>;
 };
 
 type BackEndResponseGoodType = {
@@ -22,18 +22,16 @@ type BackEndResponseGoodType = {
 
 type ChildProps = {
   loginResponse: BackEndResponseGoodType | null;
-  deleteFunction: (id: number) => Promise<void>;
-  isLoadingForNote: boolean;
 };
 
-function Home({ loginResponse, deleteFunction, isLoadingForNote }: ChildProps) {
+function Home({ loginResponse }: ChildProps) {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isDeletingNote, setIsDeletingNote] = useState<boolean>(false);
+  const [notesRefresh, setNotesRefresh] = useState<number>(0);
   const [userNotes, setUserNotes] = useState<noteResponseType | null>(null);
 
   const userNoteArray = userNotes?.userNotes;
-
-  console.log(userNoteArray);
 
   const potentialUserName =
     loginResponse?.data.name ?? localStorage.getItem("userName");
@@ -49,10 +47,35 @@ function Home({ loginResponse, deleteFunction, isLoadingForNote }: ChildProps) {
     return firstLetter + cleanName.slice(1);
   }
 
+  async function deleteUserNoteRequest(id: number): Promise<void> {
+    try {
+      setIsDeletingNote(true);
+
+      const response = await fetch("http://localhost:8080/api/notes/delete", {
+        method: "DELETE",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ noteId: id }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Delete failed: ${response.status}`);
+      }
+
+      setNotesRefresh((current) => current + 1);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsDeletingNote(false);
+    }
+  }
+
   useEffect(() => {
     async function getUserNotes() {
-      setIsLoading(true);
       try {
+        setIsLoading(true);
         const response = await fetch("http://localhost:8080/api/notes", {
           method: "GET",
           credentials: "include",
@@ -68,27 +91,7 @@ function Home({ loginResponse, deleteFunction, isLoadingForNote }: ChildProps) {
     }
 
     getUserNotes();
-  }, [deleteFunction]);
-
-  async function signOut() {
-    try {
-      const response = await fetch("http://localhost:8080/api/auth/signout", {
-        method: "POST",
-        credentials: "include",
-      });
-
-      if (!response.ok) {
-        throw new Error("Logout failed");
-      }
-
-      localStorage.removeItem("expiresAt");
-      localStorage.removeItem("userName");
-      localStorage.removeItem("createdAt");
-      navigate("/login", { replace: true });
-    } catch (err) {
-      console.error("Error: " + err);
-    }
-  }
+  }, [notesRefresh]);
 
   return (
     <div>
@@ -98,11 +101,7 @@ function Home({ loginResponse, deleteFunction, isLoadingForNote }: ChildProps) {
       >
         <div className="mt-2.5 pb-2.5 w-full flex items-center justify-between border-b-2 border-b-[#39313e]">
           <div>
-            <img
-              className="h-7 mr-5 cursor-pointer"
-              onClick={signOut}
-              src={arrow}
-            />
+            <img className="h-7 mr-5 cursor-pointer" src={arrow} />
           </div>
           <div></div>
         </div>
@@ -159,8 +158,8 @@ function Home({ loginResponse, deleteFunction, isLoadingForNote }: ChildProps) {
           {userNoteArray?.map((e) => {
             return (
               <NoteComponent
-                isLoading={isLoadingForNote}
-                deleteFunction={deleteFunction}
+                isLoading={isDeletingNote}
+                deleteFunction={deleteUserNoteRequest}
                 key={e.noteId}
                 context={e.context}
                 title={e.title}
