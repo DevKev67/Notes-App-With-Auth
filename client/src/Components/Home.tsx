@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
-import arrow from "../assets/left-arrow.svg";
 import search from "../assets/searchIcon.svg";
 import gearIcon from "../assets/gear-solid-full.svg";
+import circleSign from "../assets/circleSign.svg";
 import { useEffect, useState } from "react";
 import NoteComponent from "./NoteComponent";
 
@@ -101,7 +101,7 @@ function Home({ loginResponse }: ChildProps) {
       >
         <div className="mt-2.5 pb-2.5 w-full flex items-center justify-between border-b-2 border-b-[#39313e]">
           <div>
-            <img className="h-7 mr-5 cursor-pointer" src={arrow} />
+            <img className="h-7 ml-2 cursor-pointer" src={circleSign} />
           </div>
           <div></div>
         </div>

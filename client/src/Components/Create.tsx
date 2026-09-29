@@ -1,6 +1,7 @@
 import arrow from "../assets/left-arrow.svg";
 import createArrow from "../assets/create-arrow.svg";
 import logo from "../assets/random logo.png";
+import circleSign from "../assets/circleSign.svg";
 import { useRef, useState, type PointerEvent } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -18,6 +19,7 @@ function Create() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [createdAt] = useState(() => new Date());
   const [, setNoteReponse] = useState<noteResponseType | null>(null);
+  const [saved, setSaved] = useState<boolean>(false);
 
   const navigate = useNavigate();
 
@@ -40,6 +42,12 @@ function Create() {
       });
 
       const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error("Something went wrong creating your note");
+      }
+
+      setSaved(true);
       setNoteReponse(data);
     } catch (err) {
       console.error("Error: " + err);
@@ -50,6 +58,18 @@ function Create() {
 
   const wordCount =
     content.trim() === "" ? 0 : content.trim().split(/\s+/).length;
+
+  function changeSaveTitle() {
+    if (saved) {
+      return "Saved";
+    }
+
+    if (!saved && wordCount > 0) {
+      return "Unsaved Changes";
+    }
+
+    return "No Changes";
+  }
 
   const sidebarRef = useRef<HTMLDivElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
@@ -146,7 +166,7 @@ function Create() {
           <div className="h-full flex flex-col items-center justify-between">
             <div></div>
             <div className="mb-10">
-              <p>Maybe something here later</p>
+              <img className="h-7 cursor-pointer" src={circleSign} />
             </div>
           </div>
         </div>
@@ -190,9 +210,7 @@ function Create() {
               />
               <p className="text-zinc-400 text-xs">All Notes</p>
             </div>
-            <p className="text-zinc-400 text-xs">
-              {wordCount > 0 ? "Unsaved Changes" : "No Changes"}
-            </p>
+            <p className="text-zinc-400 text-xs">{changeSaveTitle()}</p>
           </div>
           <div className="w-full">
             <div className="pb-6 border-b border-b-[#39313e]">
@@ -202,6 +220,7 @@ function Create() {
                 placeholder="Title"
                 onChange={(e) => {
                   setTitle(e.target.value);
+                  setSaved(false);
                 }}
               />
               <p className="text-xs mt-4 text-zinc-400">
@@ -217,6 +236,7 @@ function Create() {
               p-2 focus:outline-none resize-none"
                 onChange={(e) => {
                   setContent(e.target.value);
+                  setSaved(false);
                 }}
               ></textarea>
             </div>
@@ -231,7 +251,6 @@ function Create() {
               transition-all duration-200 shadow-[1px_1px_10px] shadow-[#a963c4]"
                   onClick={async () => {
                     await handleNoteCreation();
-                    navigate("/");
                   }}
                 >
                   Save Note
