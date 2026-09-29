@@ -143,7 +143,7 @@ function Home({ loginResponse }: ChildProps) {
               className="bg-[#a963c4] p-1 pl-2 pr-2 rounded-xl text-sm mr-5 cursor-pointer active:scale-90
               transition-all duration-200"
               onClick={() => {
-                navigate("/create");
+                navigate("/create/new");
               }}
             >
               Create

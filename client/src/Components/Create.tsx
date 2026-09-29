@@ -3,7 +3,7 @@ import createArrow from "../assets/create-arrow.svg";
 import logo from "../assets/random logo.png";
 import circleSign from "../assets/circleSign.svg";
 import { useRef, useState, type PointerEvent } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 type noteResponseType = {
   success: boolean;
@@ -22,6 +22,9 @@ function Create() {
   const [saved, setSaved] = useState<boolean>(false);
 
   const navigate = useNavigate();
+  const { noteId } = useParams();
+
+  console.log(noteId);
 
   const noteInfo = {
     title,

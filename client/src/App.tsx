@@ -45,7 +45,8 @@ function App() {
 
           <Route element={<ProtectedRoutes setMessage={setMessage} />}>
             <Route path="/" element={<Home loginResponse={loginResponse} />} />
-            <Route path="/create" element={<Create />} />
+            <Route path="/create/new" element={<Create />} />
+            <Route path="/create/:noteId/edit" element={<Create />} />
             <Route path="/settings" element={<Settings />} />
           </Route>
         </Routes>

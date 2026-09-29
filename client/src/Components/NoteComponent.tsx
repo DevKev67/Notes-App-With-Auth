@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import editIcon from "../assets/edit.svg";
 import trashIcon from "../assets/trashSVG.svg";
 
@@ -16,6 +17,8 @@ function NoteComponent({
   deleteFunction,
   isLoading,
 }: NoteComponentProps) {
+  const navigate = useNavigate();
+
   return (
     <div
       className="
@@ -42,6 +45,9 @@ function NoteComponent({
             <img
               className="h-5 cursor-pointer"
               src={editIcon}
+              onClick={() => {
+                navigate(`/create/${noteid}/edit`);
+              }}
               alt="Edit note"
             />
 
