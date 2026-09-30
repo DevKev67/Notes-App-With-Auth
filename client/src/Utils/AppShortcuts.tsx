@@ -7,6 +7,7 @@ export function AppShortcuts() {
   useKeyboardShortcut("s", "ctrl", () => navigate("/settings"));
   useKeyboardShortcut("c", "ctrl", () => navigate("/create/new"));
   useKeyboardShortcut("h", "ctrl", () => navigate("/"));
+  useKeyboardShortcut("i", "ctrl", () => navigate("/shortcuts"));
 
   return null;
 }

@@ -32,7 +32,7 @@ function Settings() {
           className="h-full cursor-pointer"
           src={arrow}
           onClick={() => {
-            navigate("/");
+            navigate(-1);
           }}
         />
       </div>

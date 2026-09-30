@@ -30,6 +30,7 @@ function Home({ loginResponse }: ChildProps) {
   const [isDeletingNote, setIsDeletingNote] = useState<boolean>(false);
   const [notesRefresh, setNotesRefresh] = useState<number>(0);
   const [userNotes, setUserNotes] = useState<noteResponseType | null>(null);
+  const [isHovered, setIsHovered] = useState<boolean>(false);
 
   const userNoteArray = userNotes?.userNotes;
 
@@ -100,8 +101,29 @@ function Home({ loginResponse }: ChildProps) {
         border-r-[#39313e] border-r-2 left-0 bottom-0 top-0 w-50"
       >
         <div className="mt-2.5 pb-2.5 w-full flex items-center justify-between border-b-2 border-b-[#39313e]">
-          <div>
-            <img className="h-7 ml-2 cursor-pointer" src={circleSign} />
+          <div className="w-full relative">
+            {isHovered && (
+              <div
+                className="absolute -bottom-1 right-0 left-0 w-1/2 m-auto h-full flex items-center justify-center
+              border p-4 border-gray-500 rounded-md"
+              >
+                <p>Shortcuts</p>
+              </div>
+            )}
+
+            <img
+              className="h-7 ml-2 cursor-pointer"
+              onMouseEnter={() => {
+                setIsHovered(true);
+              }}
+              onMouseLeave={() => {
+                setIsHovered(false);
+              }}
+              onClick={() => {
+                navigate("/shortcuts");
+              }}
+              src={circleSign}
+            />
           </div>
           <div></div>
         </div>

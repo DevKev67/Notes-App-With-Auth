@@ -20,6 +20,7 @@ function Create() {
   const [createdAt] = useState(() => new Date());
   const [, setNoteReponse] = useState<noteResponseType | null>(null);
   const [saved, setSaved] = useState<boolean>(false);
+  const [isHovered, setIsHovered] = useState<boolean>(false);
 
   const navigate = useNavigate();
   const { noteId } = useParams();
@@ -159,7 +160,7 @@ function Create() {
           <div className="mt-2.5 pb-2.5 w-full flex items-center justify-between border-b-2 border-b-[#39313e]">
             <div
               onClick={() => {
-                navigate("/");
+                navigate(-1);
               }}
             >
               <img className="h-7 mr-5 cursor-pointer" src={arrow} />
@@ -168,8 +169,29 @@ function Create() {
           </div>
           <div className="h-full flex flex-col items-center justify-between">
             <div></div>
-            <div className="mb-10">
-              <img className="h-7 cursor-pointer" src={circleSign} />
+            <div className="mb-10 relative">
+              {isHovered && (
+                <div
+                  className="absolute -right-8.75 bottom-9 h-full flex items-center justify-center
+              border p-4 border-gray-500 rounded-md"
+                >
+                  <p>Shortcuts</p>
+                </div>
+              )}
+
+              <img
+                className="h-7 cursor-pointer"
+                onMouseLeave={() => {
+                  setIsHovered(false);
+                }}
+                onMouseOver={() => {
+                  setIsHovered(true);
+                }}
+                onClick={() => {
+                  navigate("/shortcuts");
+                }}
+                src={circleSign}
+              />
             </div>
           </div>
         </div>

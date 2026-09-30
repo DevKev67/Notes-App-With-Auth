@@ -8,6 +8,7 @@ import { useState } from "react";
 import Create from "./Components/Create";
 import Settings from "./Components/Settings";
 import { AppShortcuts } from "./Utils/AppShortcuts";
+import ShortcutsGuide from "./Components/ShortcutsGuide";
 
 type BackEndResponseGoodType = {
   data: {
@@ -48,6 +49,7 @@ function App() {
             <Route path="/create/new" element={<Create />} />
             <Route path="/create/:noteId/edit" element={<Create />} />
             <Route path="/settings" element={<Settings />} />
+            <Route path="/shortcuts" element={<ShortcutsGuide />} />
           </Route>
         </Routes>
       </BrowserRouter>
