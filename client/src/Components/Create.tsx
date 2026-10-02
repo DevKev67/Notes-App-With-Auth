@@ -2,7 +2,7 @@ import arrow from "../assets/left-arrow.svg";
 import createArrow from "../assets/create-arrow.svg";
 import logo from "../assets/random logo.png";
 import circleSign from "../assets/circleSign.svg";
-import { useRef, useState, type PointerEvent } from "react";
+import { useEffect, useRef, useState, type PointerEvent } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 type noteResponseType = {
@@ -12,8 +12,17 @@ type noteResponseType = {
   };
 };
 
+type dataType = {
+  success: boolean;
+  response: {
+    noteId: number;
+    title: string;
+    context: string;
+  };
+};
+
 function Create() {
-  const [title, setTitle] = useState<string>();
+  const [title, setTitle] = useState<string>("");
   const [content, setContent] = useState<string>("");
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -25,7 +34,26 @@ function Create() {
   const navigate = useNavigate();
   const { noteId } = useParams();
 
-  console.log(noteId);
+  useEffect(() => {
+    async function getOneUserNote() {
+      if (noteId) {
+        try {
+          const response = await fetch(
+            `http://localhost:8080/api/notes/${noteId}`,
+            {
+              credentials: "include",
+            },
+          );
+          const data: dataType = await response.json();
+          setTitle(data.response.title);
+          setContent(data.response.context);
+        } catch (err) {
+          console.error(err);
+        }
+      }
+    }
+    getOneUserNote();
+  }, [noteId]);
 
   const noteInfo = {
     title,
@@ -243,6 +271,7 @@ function Create() {
                 className="mt-4 w-full text-4xl placeholder:text-white placeholder:font-['Newsreader']
                 focus:outline-none"
                 placeholder="Title"
+                value={title}
                 onChange={(e) => {
                   setTitle(e.target.value);
                   setSaved(false);
@@ -256,6 +285,7 @@ function Create() {
           <div className="flex-1 min-h-0 w-full mt-1 border-b border-b-[#39313e]">
             <div className="h-full pb-3">
               <textarea
+                value={content}
                 placeholder="Write something meaningful..."
                 className="h-full w-full text-lg font-sans text-zinc-300
               p-2 focus:outline-none resize-none"
@@ -278,7 +308,7 @@ function Create() {
                     await handleNoteCreation();
                   }}
                 >
-                  Save Note
+                  {noteId ? "Update Note" : "Save Note"}
                 </button>
               </div>
             </div>

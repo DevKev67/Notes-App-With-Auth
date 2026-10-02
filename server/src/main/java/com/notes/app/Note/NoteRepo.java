@@ -6,15 +6,17 @@ import org.springframework.stereotype.Repository;
 import jakarta.transaction.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface NoteRepo extends JpaRepository<NoteEntity, Long> {
   List<NoteEntity> findAllByUser_Id(Long userId);
 
-  @Transactional
   boolean existsByNoteIdAndUser_Id(Long noteId, Long userId);
 
   @Transactional
   void deleteByNoteIdAndUser_Id(Long noteId, Long userId);
+
+  Optional<NoteEntity> findByNoteIdAndUser_Id(Long noteId, Long userId);
 
 }

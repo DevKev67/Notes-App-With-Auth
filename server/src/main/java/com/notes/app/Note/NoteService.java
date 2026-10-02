@@ -47,7 +47,13 @@ public class NoteService {
     }
 
     noteRepo.deleteByNoteIdAndUser_Id(noteId, user.getId());
+  }
 
+  public GetNoteResponse returnOneUserNote(Long noteId, UserEntity userEntity) {
+    NoteEntity note = noteRepo.findByNoteIdAndUser_Id(noteId, userEntity.getId())
+        .orElseThrow(() -> new NoteNotFoundException("Note does not exist or Note Id missing"));
+
+    return new GetNoteResponse(note.getNoteId(), note.getTitle(), note.getContent());
   }
 
 }
