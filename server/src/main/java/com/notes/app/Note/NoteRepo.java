@@ -12,9 +12,9 @@ public interface NoteRepo extends JpaRepository<NoteEntity, Long> {
   List<NoteEntity> findAllByUser_Id(Long userId);
 
   @Transactional
-  boolean existsByNoteIdAndUserName(Long noteId, String userName);
+  boolean existsByNoteIdAndUser_Id(Long noteId, Long userId);
 
   @Transactional
-  void deleteByNoteIdAndUserName(Long noteId, String userName);
+  void deleteByNoteIdAndUser_Id(Long noteId, Long userId);
 
 }

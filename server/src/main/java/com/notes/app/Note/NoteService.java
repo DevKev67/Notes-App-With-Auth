@@ -40,13 +40,13 @@ public class NoteService {
   }
 
   public void deleteUserNote(Long noteId, UserEntity user) {
-    boolean exists = noteRepo.existsByNoteIdAndUserName(noteId, user.getName());
+    boolean exists = noteRepo.existsByNoteIdAndUser_Id(noteId, user.getId());
 
     if (!exists) {
       throw new NoteNotFoundException("Note not found or unauthorized to delete");
     }
 
-    noteRepo.deleteByNoteIdAndUserName(noteId, user.getName());
+    noteRepo.deleteByNoteIdAndUser_Id(noteId, user.getId());
 
   }
 
