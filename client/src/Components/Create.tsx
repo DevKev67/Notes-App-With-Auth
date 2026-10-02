@@ -21,6 +21,10 @@ type dataType = {
   };
 };
 
+type updateDataType = {
+  success: boolean;
+};
+
 function Create() {
   const [title, setTitle] = useState<string>("");
   const [content, setContent] = useState<string>("");
@@ -30,16 +34,26 @@ function Create() {
   const [, setNoteReponse] = useState<noteResponseType | null>(null);
   const [saved, setSaved] = useState<boolean>(false);
   const [isHovered, setIsHovered] = useState<boolean>(false);
+  const [editMode, setEditMode] = useState<boolean>(false);
+  const [initialTitle, setInitialTitle] = useState<string>("");
+  const [initialContent, setInitialContent] = useState<string>("");
+  const [updateChecker, setUpdateChecker] = useState<boolean>(false);
 
   const navigate = useNavigate();
   const { noteId } = useParams();
 
+  const noteInfo = {
+    title,
+    content,
+  };
+
   useEffect(() => {
     async function getOneUserNote() {
       if (noteId) {
+        setEditMode(true);
         try {
           const response = await fetch(
-            `http://localhost:8080/api/notes/${noteId}`,
+            `http://localhost:8080/api/notes/getOneNote/${noteId}`,
             {
               credentials: "include",
             },
@@ -47,6 +61,8 @@ function Create() {
           const data: dataType = await response.json();
           setTitle(data.response.title);
           setContent(data.response.context);
+          setInitialTitle(data.response.title);
+          setInitialContent(data.response.context);
         } catch (err) {
           console.error(err);
         }
@@ -55,10 +71,30 @@ function Create() {
     getOneUserNote();
   }, [noteId]);
 
-  const noteInfo = {
-    title,
-    content,
-  };
+  async function updateCurrentNote() {
+    if (noteId) {
+      try {
+        const response = await fetch(
+          `http://localhost:8080/api/notes/updateNote/${noteId}`,
+          {
+            method: "PATCH",
+            credentials: "include",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(noteInfo),
+          },
+        );
+        const data: updateDataType = await response.json();
+        setUpdateChecker(data.success);
+        if (data.success) {
+          setInitialTitle(title);
+          setInitialContent(content);
+        }
+        console.log(data);
+      } catch (err) {
+        console.error(err);
+      }
+    }
+  }
 
   async function handleNoteCreation() {
     try {
@@ -92,15 +128,22 @@ function Create() {
     content.trim() === "" ? 0 : content.trim().split(/\s+/).length;
 
   function changeSaveTitle() {
+    const hasEditChanges = title !== initialTitle || content !== initialContent;
+    const hasCreateChanges = title.trim() !== "" || content.trim() !== "";
+
+    if (editMode) {
+      if (updateChecker) {
+        return "Updated!";
+      }
+
+      return hasEditChanges ? "Unsaved Changes" : "No Changes";
+    }
+
     if (saved) {
       return "Saved";
     }
 
-    if (!saved && wordCount > 0) {
-      return "Unsaved Changes";
-    }
-
-    return "No Changes";
+    return hasCreateChanges ? "Unsaved Changes" : "No Changes";
   }
 
   const sidebarRef = useRef<HTMLDivElement>(null);
@@ -275,6 +318,7 @@ function Create() {
                 onChange={(e) => {
                   setTitle(e.target.value);
                   setSaved(false);
+                  setUpdateChecker(false);
                 }}
               />
               <p className="text-xs mt-4 text-zinc-400">
@@ -292,6 +336,7 @@ function Create() {
                 onChange={(e) => {
                   setContent(e.target.value);
                   setSaved(false);
+                  setUpdateChecker(false);
                 }}
               ></textarea>
             </div>
@@ -305,7 +350,10 @@ function Create() {
                   className="bg-[#a963c4] p-2 pl-4 pr-4 rounded-lg text-xs cursor-pointer active:scale-90
               transition-all duration-200 shadow-[1px_1px_10px] shadow-[#a963c4]"
                   onClick={async () => {
-                    await handleNoteCreation();
+                    if (!editMode) {
+                      await handleNoteCreation();
+                    }
+                    updateCurrentNote();
                   }}
                 >
                   {noteId ? "Update Note" : "Save Note"}

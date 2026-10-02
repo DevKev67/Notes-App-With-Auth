@@ -5,7 +5,10 @@ import org.springframework.stereotype.Service;
 import com.notes.app.Auth.GlobalExceptions.Exceptions.NoteNotFoundException;
 import com.notes.app.Auth.User.UserEntity;
 
+import jakarta.transaction.Transactional;
+
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class NoteService {
@@ -54,6 +57,20 @@ public class NoteService {
         .orElseThrow(() -> new NoteNotFoundException("Note does not exist or Note Id missing"));
 
     return new GetNoteResponse(note.getNoteId(), note.getTitle(), note.getContent());
+  }
+
+  @Transactional
+  public void updateUserNote(Long noteId, UserEntity userEntity, PatchRequest patchRequest) {
+    NoteEntity note = noteRepo.findByNoteIdAndUser_Id(noteId, userEntity.getId())
+        .orElseThrow(() -> new NoteNotFoundException("Note does not exist or Note Id missing"));
+
+    if (patchRequest.getTitle() != null && !Objects.equals(note.getTitle(), patchRequest.getTitle())) {
+      note.setTitle(patchRequest.getTitle());
+    }
+
+    if (patchRequest.getContent() != null && !Objects.equals(note.getContent(), patchRequest.getContent())) {
+      note.setContent(patchRequest.getContent());
+    }
   }
 
 }

@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -62,7 +63,7 @@ public class NoteController {
 
   }
 
-  @GetMapping("/{noteId}")
+  @GetMapping("/getOneNote/{noteId}")
   public ResponseEntity<Map<String, Object>> getOneUserNote(@PathVariable Long noteId,
       @AuthenticationPrincipal UserEntity user) {
     GetNoteResponse response = noteService.returnOneUserNote(noteId, user);
@@ -71,6 +72,15 @@ public class NoteController {
         Map.of(
             "success", true,
             "response", response));
+  }
+
+  @PatchMapping("/updateNote/{noteId}")
+  public ResponseEntity<Map<String, Object>> updateUserNote(@PathVariable Long noteId,
+      @RequestBody PatchRequest patchRequest,
+      @AuthenticationPrincipal UserEntity userEntity) {
+    noteService.updateUserNote(noteId, userEntity, patchRequest);
+
+    return ResponseEntity.ok().body(Map.of("success", true));
   }
 
 }
