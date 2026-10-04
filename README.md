@@ -1,22 +1,24 @@
-
 # Notes App W/ Authentication
 
-Full-stack notes application with React, TypeScript, Spring Boot, and PostgreSQL. Users are able to securely sign up/login and perform all CRUD operations using JWT cookie authentication. 
+Full-stack notes application with React, TypeScript, Spring Boot, and PostgreSQL. Users are able to securely sign up/login and perform all CRUD operations using JWT cookie authentication.
+
 ## Prerequisites
 
 ```bash
   NodeJS
   JDK 25
-  PostgreSQL - Knowledge of the basics 
+  PostgreSQL - Knowledge of the basics
 ```
 
-
 ## Demo
+
 [Home Page](demo/home-page-with-notes.png)
 [Create Note Page](demo/create-page.png)
-
+[Signup Page](demo/sign-up-page.png)
+[Login Page](demo/log-in-page)
 
 ## Database Setup
+
 Create a PostgreSQL user and database that match the values in your `.env` file.
 
 This project should automatically make/update the tables for you due to the following configuration:
@@ -48,13 +50,11 @@ CREATE TABLE IF NOT EXISTS user_notes (
 
 Create an .env file inside server and paste the following
 
-
 ```
 SECRET_KEY=replace-with-a-long-random-secret
 DATABASE_URL=jdbc:postgresql://localhost:5432/your-postgres-db-name
 USERNAME=your-postgres-username
 ```
-
 
 Generate a secure JWT secret with:
 
@@ -63,7 +63,6 @@ openssl rand -base64 32
 ```
 
 Copy its output and use it as the `SECRET_KEY` value in your `.env` file.
-
 
 If your PostgreSQL database requires a password, add this line to `server/src/main/resources/application.properties`:
 
@@ -80,6 +79,7 @@ DB_PASSWORD=your-postgres-password
 IMPORTANT
 
 Spring Boot does not automatically load `.env` files. From the project root, run:
+
 ### macOS/Linux (Bash or Zsh)
 
 ```bash
@@ -88,8 +88,8 @@ set -a
 source .env
 set +a
 ```
-> The backend is configured to allow the frontend at `http://localhost:5173`. If Vite starts on another port, update the allowed origin in `SecurityConfig.java`.
 
+> The backend is configured to allow the frontend at `http://localhost:5173`. If Vite starts on another port, update the allowed origin in `SecurityConfig.java`.
 
 ## Frontend Configuration
 
@@ -98,6 +98,5 @@ cd client
 npm install
 npm run dev
 ```
+
 `npm install` is needed the first time so the project dependencies are readily available
-
-
