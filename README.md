@@ -12,8 +12,8 @@ Full-stack notes application with React, TypeScript, Spring Boot, and PostgreSQL
 
 
 ## Demo
-![Home Page](demo/home-page-with-notes.png)
-![Create Note Page](demo/create-page.png)
+[Home Page](demo/home-page-with-notes.png)
+[Create Note Page](demo/create-page.png)
 
 
 ## Database Setup
