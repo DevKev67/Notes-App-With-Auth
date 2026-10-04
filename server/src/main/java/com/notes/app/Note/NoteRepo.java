@@ -19,4 +19,10 @@ public interface NoteRepo extends JpaRepository<NoteEntity, Long> {
 
   Optional<NoteEntity> findByNoteIdAndUser_Id(Long noteId, Long userId);
 
+  List<NoteEntity> findByUser_IdAndTitleContainingIgnoreCaseOrUser_IdAndContentContainingIgnoreCase(
+      Long titleUserId,
+      String titleQuery,
+      Long contentUserId,
+      String contentQuery);
+
 }

@@ -24,18 +24,64 @@ type ChildProps = {
   loginResponse: BackEndResponseGoodType | null;
 };
 
+async function fetchUserNotes(): Promise<noteResponseType> {
+  const response = await fetch("http://localhost:8080/api/notes", {
+    method: "GET",
+    credentials: "include",
+  });
+
+  if (!response.ok) {
+    throw new Error(`Fetching notes failed: ${response.status}`);
+  }
+
+  return response.json();
+}
+
 function Home({ loginResponse }: ChildProps) {
   const navigate = useNavigate();
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isDeletingNote, setIsDeletingNote] = useState<boolean>(false);
   const [notesRefresh, setNotesRefresh] = useState<number>(0);
   const [userNotes, setUserNotes] = useState<noteResponseType | null>(null);
   const [isHovered, setIsHovered] = useState<boolean>(false);
+  const [identifier, setIdentifier] = useState<string>("");
 
   const userNoteArray = userNotes?.userNotes;
 
   const potentialUserName =
     loginResponse?.data.name ?? localStorage.getItem("userName");
+
+  async function searchByFilter() {
+    try {
+      setIsLoading(true);
+
+      const response = await fetch(
+        `http://localhost:8080/api/notes/search?identifier=${encodeURIComponent(identifier)}`,
+        {
+          credentials: "include",
+        },
+      );
+      const data = await response.json();
+      setUserNotes(data);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  async function clearSearch() {
+    setIdentifier("");
+    try {
+      setIsLoading(true);
+      const data = await fetchUserNotes();
+      setUserNotes(data);
+    } catch (err) {
+      console.error("Error: " + err);
+    } finally {
+      setIsLoading(false);
+    }
+  }
 
   function correctUserName() {
     if (!potentialUserName) {
@@ -74,30 +120,32 @@ function Home({ loginResponse }: ChildProps) {
   }
 
   useEffect(() => {
-    async function getUserNotes() {
-      try {
-        setIsLoading(true);
-        const response = await fetch("http://localhost:8080/api/notes", {
-          method: "GET",
-          credentials: "include",
-        });
+    let isCurrent = true;
 
-        const data = await response.json();
-        setUserNotes(data);
-      } catch (err) {
+    void fetchUserNotes()
+      .then((data) => {
+        if (isCurrent) {
+          setUserNotes(data);
+        }
+      })
+      .catch((err) => {
         console.error("Error: " + err);
-      } finally {
-        setIsLoading(false);
-      }
-    }
+      })
+      .finally(() => {
+        if (isCurrent) {
+          setIsLoading(false);
+        }
+      });
 
-    getUserNotes();
+    return () => {
+      isCurrent = false;
+    };
   }, [notesRefresh]);
 
   return (
     <div>
       <div
-        className="flex flex-col items-center fixed bg-[#1D1A20]
+        className="hidden md:flex [@media(max-height:450px)]:hidden flex-col items-center fixed bg-[#1D1A20]
         border-r-[#39313e] border-r-2 left-0 bottom-0 top-0 w-50"
       >
         <div className="mt-2.5 pb-2.5 w-full flex items-center justify-between border-b-2 border-b-[#39313e]">
@@ -128,18 +176,35 @@ function Home({ loginResponse }: ChildProps) {
           <div></div>
         </div>
         <div className="h-full flex flex-col items-center justify-between">
-          <div className="relative w-45 mt-5">
-            <input
-              className="placeholder:text-white border-2 border-[#39313e] rounded-2xl
-                p-1 pl-3 pr-10 text-sm w-full focus:outline-none"
-              placeholder="Search"
-            />
-            <div
-              className="absolute right-0 top-0  flex items-center justify-center
-              bg-[#AA60C8] h-7 w-7 rounded-2xl cursor-pointer"
-            >
-              <img className="h-5" src={search} />
+          <div className="w-45 mt-5">
+            <div className="relative">
+              <input
+                className="placeholder:text-white border-2 border-[#39313e] rounded-2xl
+                  p-1 pl-3 pr-10 text-sm w-full focus:outline-none"
+                placeholder="Search"
+                value={identifier}
+                onChange={(e) => {
+                  setIdentifier(e.target.value);
+                }}
+              />
+              <button
+                type="button"
+                aria-label="Search notes"
+                className="absolute right-0 top-0 flex items-center justify-center
+                bg-[#AA60C8] h-7 w-7 rounded-2xl cursor-pointer"
+                onClick={() => void searchByFilter()}
+              >
+                <img className="h-5" src={search} alt="" />
+              </button>
             </div>
+            <button
+              type="button"
+              className="mt-2 w-full rounded-xl border border-[#39313e] py-1 text-xs text-zinc-300
+              cursor-pointer transition-colors hover:bg-[#39313e]"
+              onClick={() => void clearSearch()}
+            >
+              Clear
+            </button>
           </div>
           <div
             onClick={() => {
@@ -151,7 +216,7 @@ function Home({ loginResponse }: ChildProps) {
           </div>
         </div>
       </div>
-      <div className="ml-45 pl-5 pt-3 pb-2 border-b-2 border-b-[#39313e]">
+      <div className="ml-0 md:ml-45 [@media(max-height:450px)]:ml-0 pl-5 pt-3 pb-2 border-b-2 border-b-[#39313e]">
         <div className="flex items-center justify-between ">
           <div className="flex items-center justify-start w-full">
             <div>
@@ -173,7 +238,7 @@ function Home({ loginResponse }: ChildProps) {
           </div>
         </div>
       </div>
-      <div className="ml-48 px-5 pb-8">
+      <div className="ml-0 md:ml-48 [@media(max-height:450px)]:ml-0 px-5 pb-8">
         <p className="mt-4 text-2xl font-['Newsreader']">Notes</p>
         {isLoading && <p>Loading...</p>}
         <div className="mt-5 grid w-full grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">

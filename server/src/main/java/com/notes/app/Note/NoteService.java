@@ -73,4 +73,16 @@ public class NoteService {
     }
   }
 
+  public List<GetNoteResponse> findNotesViaFilter(UserEntity userEntity, String identifier) {
+    List<NoteEntity> allMatchingNotes = noteRepo
+        .findByUser_IdAndTitleContainingIgnoreCaseOrUser_IdAndContentContainingIgnoreCase(
+            userEntity.getId(), identifier, userEntity.getId(), identifier);
+
+    return allMatchingNotes
+        .stream()
+        .map(note -> new GetNoteResponse(note.getNoteId(), note.getTitle(), note.getContent()))
+        .toList();
+
+  }
+
 }

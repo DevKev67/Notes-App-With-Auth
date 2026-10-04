@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.notes.app.Auth.User.UserEntity;
@@ -81,6 +82,17 @@ public class NoteController {
     noteService.updateUserNote(noteId, userEntity, patchRequest);
 
     return ResponseEntity.ok().body(Map.of("success", true));
+  }
+
+  @GetMapping("/search")
+  ResponseEntity<Map<String, Object>> getFilteredNotes(@RequestParam(name = "identifier") String identifier,
+      @AuthenticationPrincipal UserEntity userEntity) {
+
+    List<GetNoteResponse> notes = noteService.findNotesViaFilter(userEntity, identifier);
+
+    return ResponseEntity.ok().body(Map.of("success", true,
+        "userNotes", notes));
+
   }
 
 }

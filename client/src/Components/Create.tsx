@@ -226,7 +226,7 @@ function Create() {
         <div
           ref={sidebarRef}
           className="hidden md:flex [@media(max-height:450px)]:hidden flex-col items-center fixed
-          bg-[#201d22] border-r-[#39313e] border-r-2 left-0 bottom-0 top-0 w-[clamp(9rem,14dvw,11.25rem)]"
+          bg-[#1D1A20] border-r-[#39313e] border-r-2 left-0 bottom-0 top-0 w-[clamp(9rem,14dvw,11.25rem)]"
         >
           <div className="mt-2.5 pb-2.5 w-full flex items-center justify-between border-b-2 border-b-[#39313e]">
             <div
